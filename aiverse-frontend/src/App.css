@@ -1,42 +1,24 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* src/App.css */
+
+/* Apply a basic reset or normalize styles if needed */
+body {
+  margin: 0;
+  font-family: sans-serif; /* Use a common sans-serif font */
+  background-color: #f8f9fa; /* Light grey background for the page */
+  color: #343a40; /* Dark grey text color */
+  line-height: 1.5;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.App {
+  /* This class is on the root div in App.tsx */
+  /* Add any app-wide container styles here */
+  min-height: 100vh; /* Ensure app takes at least full viewport height */
+  display: flex;
+  flex-direction: column;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+main {
+  flex-grow: 1; /* Allows main content to fill available space if footer is added */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
+/* Add more global styles or resets as needed */

@@ -20,4 +20,21 @@ model NewsArticle {
   updatedAt DateTime @updatedAt     // Automatically set on update
 }
 
+model YouTubeVideo {
+  id            String    @id @default(cuid())
+  videoId       String    @unique // YouTube's video ID
+  title         String
+  description   String?
+  channelId     String?
+  channelTitle  String?
+  publishedAt   DateTime?
+  thumbnailUrl  String?   // URL for the video thumbnail
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Optional: Add tags/topics later like NewsArticle
+  // topics        String[] @default([])
+}
+
 // Add other models later (e.g., Video, Trend)

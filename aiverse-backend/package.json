@@ -6,7 +6,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "fetch:manual": "ts-node src/scripts/manualFetch.ts"
+    "fetch:manual": "ts-node src/scripts/manualFetch.ts",
+    "fetch:videos": "ts-node src/scripts/manualVideoFetch.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "@prisma/client": "^6.5.0",
     "axios": "^1.8.4",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "node-cron": "^3.0.3"
   }
