@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { NewsArticle } from '@prisma/client';
 import prisma from '../lib/prisma';
+import { getTopicsForArticle } from './aiTagger';
 
 interface NewsApiResponseArticle {
     source: { id: string | null; name: string };
@@ -62,6 +63,7 @@ export async function fetchAiNewsFromApi(): Promise<ProcessedArticle[]> {
                 description: article.description || null,
                 publishedAt: article.publishedAt ? new Date(article.publishedAt) : null,
                 imageUrl: article.urlToImage || null,
+                topics: []
             }));
 
         return processedArticles;
@@ -76,32 +78,36 @@ export async function fetchAiNewsFromApi(): Promise<ProcessedArticle[]> {
     }
 }
 
-export async function saveArticlesToDb(articles: ProcessedArticle[]): Promise<{ count: number }> {
+export async function saveArticlesToDb(articles: ProcessedArticle[]): Promise<{ savedCount: number; skippedCount: number }> {
     if (articles.length === 0) {
         console.log('No new articles to save.');
-        return { count: 0 };
+        return { savedCount: 0, skippedCount: 0 };
     }
 
     console.log(`Attempting to save ${articles.length} articles to the database...`);
     let savedCount = 0;
+    let skippedCount = 0;
 
     for (const article of articles) {
         try {
+            const articleTextForTagging = `${article.title}. ${article.description || ''}`;
+            const assignedTopics = await getTopicsForArticle(articleTextForTagging); // Get topics from AI
+
+            // --- Proceed with saving ---
             await prisma.newsArticle.upsert({
-                where: { url: article.url }, // Use the unique URL to check existence
-                update: { // Fields to update if the article *already* exists (optional)
-                    // title: article.title, // You might want to update fields if they change
-                    // description: article.description,
-                    // imageUrl: article.imageUrl,
-                    // publishedAt: article.publishedAt,
+                where: { url: article.url },
+                update: { // Fields to update if article exists
+                    // ... other fields you might update ...
+                    topics: assignedTopics, // Update topics as well
                 },
-                create: { // Fields to set when creating a *new* article
+                create: { // Fields for new article
                     title: article.title,
                     url: article.url,
                     sourceName: article.sourceName,
                     description: article.description,
                     publishedAt: article.publishedAt,
                     imageUrl: article.imageUrl,
+                    topics: assignedTopics, // Save the assigned topics
                 },
             });
             savedCount++;
@@ -114,11 +120,11 @@ export async function saveArticlesToDb(articles: ProcessedArticle[]): Promise<{ 
     }
 
     console.log(`Successfully saved/updated ${savedCount} articles.`);
-    return { count: savedCount };
+    return { savedCount: savedCount, skippedCount: skippedCount };
 }
 
-export async function fetchAndSaveAiNews(): Promise<{ fetched: number; saved: number }> {
+export async function fetchAndSaveAiNews(): Promise<{ fetched: number; saved: number; skippedCount: number }> {
     const fetchedArticles = await fetchAiNewsFromApi();
     const saveResult = await saveArticlesToDb(fetchedArticles);
-    return { fetched: fetchedArticles.length, saved: saveResult.count };
+    return { fetched: fetchedArticles.length, saved: saveResult.savedCount, skippedCount: saveResult.skippedCount };
 }

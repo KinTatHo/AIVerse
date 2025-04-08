@@ -1,19 +1,5 @@
 import React from 'react';
-
-interface NewsArticle {
-  id: string;
-  title: string;
-  url: string;
-  sourceName: string | null;
-  description: string | null;
-  publishedAt: string | null;
-  imageUrl: string | null;
-  // topics?: string[];
-}
-
-interface NewsCardProps {
-  article: NewsArticle;
-}
+import { NewsCardProps } from '../constants/types';
 
 const formatDate = (dateString: string | null): string => {
   if (!dateString) return '';
@@ -86,19 +72,18 @@ const NewsCard: React.FC<NewsCardProps> = ({ article }) => {
           </svg>
         </a>
         
-        {/* Uncomment when implementing topics */}
-        {/* {article.topics && article.topics.length > 0 && (
-          <div className="flex flex-wrap mt-3 -mx-1">
-            {article.topics.map(topic => (
-              <span 
-                key={topic} 
-                className="bg-indigo-50 text-indigo-600 text-xs px-2 py-1 rounded-full mx-1 mb-1"
-              >
-                {topic}
-              </span>
-            ))}
-          </div>
-        )} */}
+{article.topics && article.topics.length > 0 && (
+  <div className="flex flex-wrap mt-3 -mx-1">
+    {article.topics.map(topic => (
+      <span
+        key={topic} // Use topic as key assuming they are unique per article
+        className="bg-indigo-50 text-indigo-700 text-xs font-medium px-2.5 py-0.5 rounded-full mx-1 mb-1 shadow-sm"
+      >
+        {topic}
+      </span>
+    ))}
+  </div>
+)}
       </div>
     </article>
   );

@@ -14,7 +14,7 @@ const AI_CHANNEL_IDS = [
     // Add more channel IDs here
     'UCSHZKyawb77ixDdsGog4iWA', // Lex Fridman (Full Podcast)
     'UCPqrgba4U1a9SPqnslBEstab', // DeepMind (Less Frequent)
-    'UCG7J20LhUeLl6y_Emi7OJrA', // Marques Brownlee (Less Frequent)
+    'UC2J-0g_nxlwcD9JBK1eTleQ', // Marques Brownlee (Less Frequent)
 ];
 
 // Define the structure we expect from the Youtube API response item's snippet

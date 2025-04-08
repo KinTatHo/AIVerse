@@ -66,13 +66,20 @@ cron.schedule('0 * * * *', async () => { // Runs at the start of every hour
   
   
   // 2. YouTube Video Fetch (Every 6 Hours) - Add this
-  cron.schedule('15 */6 * * *', async () => { // Runs at 15 minutes past the hour, every 6 hours (e.g., 00:15, 06:15, 12:15, 18:15)
-    console.log(`[${new Date().toISOString()}] Running scheduled YouTube video fetch...`);
+  cron.schedule('*/5 * * * *', async () => { // Temporary: Every 5 mins for testing
+    const jobStartTime = new Date().toISOString();
+    console.log(`[${jobStartTime}] Cron Job Triggered: Running scheduled YouTube video fetch...`);
     try {
-      const result = await fetchAndSaveYouTubeVideos();
-      console.log(`[${new Date().toISOString()}] Scheduled YouTube fetch finished. Fetched: ${result.fetched}, Saved/Updated: ${result.saved}`);
+      // Optional check: Verify ENV VARs are loaded in this context
+      console.log(`[${jobStartTime}] Cron Check: YT Key Loaded: ${!!process.env.YOUTUBE_API_KEY}, DB URL Loaded: ${!!process.env.DATABASE_URL}`);
+  
+      const result = await fetchAndSaveYouTubeVideos(); // This function needs good internal logging too
+  
+      console.log(`[${new Date().toISOString()}] Cron Job Success: YouTube fetch finished. Fetched: ${result.fetched}, Saved: ${result.saved}`);
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] Scheduled YouTube fetch failed:`, error);
+      console.error(`[${new Date().toISOString()}] Cron Job FAILED: YouTube fetch failed:`, error); // Log the specific error
+    } finally {
+       console.log(`[${new Date().toISOString()}] Cron Job Attempt Finished.`); // Log completion regardless of outcome
     }
   }, {
     scheduled: true,
